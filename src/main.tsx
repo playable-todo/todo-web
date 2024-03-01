@@ -4,6 +4,7 @@ import App from './App.tsx'
 
 import "@fontsource/open-sans";
 import "@fontsource/open-sans/400.css";
+import "@fontsource/open-sans/500.css";
 import "@fontsource/open-sans/600.css";
 
 import './index.css'
