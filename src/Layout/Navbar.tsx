@@ -4,16 +4,13 @@ import React, { useState, MouseEvent, useEffect } from 'react';
 import { 
     Grid, 
     Box, 
-    Button, 
     AppBar, 
     Toolbar, 
     IconButton, 
     MenuItem, 
     Container, 
-    Paper, 
     Drawer, 
     Menu, 
-    Tooltip, 
     Divider,
     Avatar,
     ListItemAvatar,
@@ -22,7 +19,6 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    InputBase,
     Typography,
     useTheme
   } from "@mui/material"
@@ -38,34 +34,38 @@ import {
 // Material UI styles
 import { navbarStyles } from '../styles';
 
+// Assets
+import LogoImage from '../assets/logo.png'
+
 // React Router
 import { Link, useNavigate } from 'react-router-dom';
 
 // Redux
 import store,{ removeAllData } from '../redux/store';
-import { LoginData } from '../redux/interface';
 
+// Helpers
 import { Request } from '../helpers/Request';
 
 // Components
 import SearchBar from '../components/SearchBar';
 
-// Assets
-import LogoImage from '../assets/logo.png'
+// İnterfaces
+import { LoginData } from '../redux/interface';
 
 const Navbar = () => {
-  const theme = useTheme();
-  const navigate = useNavigate()
+    // Material UI and react router
+    const theme = useTheme();
+    const navigate = useNavigate()
 
-   // Redux
-  const loginData = store.getState().authUser?.loginData;
+    // Redux
+    const loginData = store.getState().authUser?.loginData;
 
-   // useState elements
-  const [mobileNav, setMobileNav] = useState<null | HTMLElement>(null);
-  const [userData, setUserData] = useState<LoginData>({});
-  const [profilePopover, setProfilePopover] = useState<null | HTMLElement>(null);
+    // useState elements
+    const [mobileNav, setMobileNav] = useState<null | HTMLElement>(null);
+    const [userData, setUserData] = useState<LoginData>({});
+    const [profilePopover, setProfilePopover] = useState<null | HTMLElement>(null);
 
-  /*
+    /*
         Gets user data in redux state
     */
     useEffect(() => {
@@ -86,6 +86,7 @@ const Navbar = () => {
         setProfilePopover(null);
     };
 
+    // Mobile navbar 
     const openMobileMenu = (event: MouseEvent<HTMLElement>) => {
         setMobileNav(event.currentTarget);
     }
@@ -93,6 +94,7 @@ const Navbar = () => {
         setMobileNav(null)
     }
 
+    // logo section
     const LogoComponent = () => (
         <Link to="/" style={{ textDecoration: 'none' }}>
             <Box sx={{ display :'flex' }}>
@@ -107,12 +109,13 @@ const Navbar = () => {
             </Box>
         </Link>
     )
-
+    
+    // User Avatar
     const UserAvatar = () => (
         <Avatar sx={navbarStyles.authAvatar}>{userData.fullname ? userData?.fullname!.charAt(0) : ''}</Avatar>
     )
 
-      // Logout
+    // Logout
     const handlelogout = async() => {
         const url = "/oauth/logout";
         const result = await Request({
@@ -130,8 +133,7 @@ const Navbar = () => {
   return (
     <AppBar position="sticky" sx={navbarStyles.appBar}>
       <Container maxWidth='lg' sx={navbarStyles.container}>
-          {/* Desktop navbar */}
-
+          {/* Desktop navbar section start */}
           <Toolbar sx={navbarStyles.toolbar}> 
               <Grid container>
                     <Grid item xl={2} lg={2} md={2} sm={6}>
@@ -141,47 +143,48 @@ const Navbar = () => {
                             <SearchBar device="desktop" />
                     </Grid>
                     <Grid item xl={2} lg={2} md={2} sm={6}>
-                            <IconButton
-                                onClick={handleProfileOpen}
-                                size="small"
-                                sx={navbarStyles.authAvatarIconButton}
-                                aria-controls={LoginOpen ? 'account-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={LoginOpen ? 'true' : undefined}
-                            >
-                                <Avatar sx={navbarStyles.authAvatar}>{userData.fullname ? userData?.fullname!.charAt(0) : ''}</Avatar>
-                                <ExpandMore />
-                            </IconButton>
-                            <Menu
-                                anchorEl={profilePopover}
-                                id="account-menu"
-                                open={LoginOpen}
-                                onClose={handleProfileOpen}
-                                onClick={handleProfileClose}
-                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                            >
-                                
-                                <MenuItem onClick={handleProfileClose}>
-                                    <UserAvatar />
-                                    <Typography sx={navbarStyles.authMenuAvatarText}>{userData?.fullname}</Typography>
-                                </MenuItem>
-                                <Divider />
-                                <MenuItem onClick={() => { 
-                                    handleProfileClose();
-                                    handlelogout();
-                                }}>
-                                    <ListItemIcon>
-                                        <Logout fontSize="small" />
-                                    </ListItemIcon>
-                                    Çıkış
-                                </MenuItem>
-                            </Menu>
+                        <IconButton
+                            onClick={handleProfileOpen}
+                            size="small"
+                            sx={navbarStyles.authAvatarIconButton}
+                            aria-controls={LoginOpen ? 'account-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={LoginOpen ? 'true' : undefined}
+                        >
+                            <Avatar sx={navbarStyles.authAvatar}>{userData.fullname ? userData?.fullname!.charAt(0) : ''}</Avatar>
+                            <ExpandMore />
+                        </IconButton>
+                        <Menu
+                            anchorEl={profilePopover}
+                            id="account-menu"
+                            open={LoginOpen}
+                            onClose={handleProfileOpen}
+                            onClick={handleProfileClose}
+                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                        >
+                            
+                            <MenuItem onClick={handleProfileClose}>
+                                <UserAvatar />
+                                <Typography sx={navbarStyles.authMenuAvatarText}>{userData?.fullname}</Typography>
+                            </MenuItem>
+                            <Divider />
+                            <MenuItem onClick={() => { 
+                                handleProfileClose();
+                                handlelogout();
+                            }}>
+                                <ListItemIcon>
+                                    <Logout fontSize="small" />
+                                </ListItemIcon>
+                                Çıkış
+                            </MenuItem>
+                        </Menu>
                     </Grid>
               </Grid>
           </Toolbar>
-         
-          {/* Mobile navbar */}
+          {/* Desktop navbar section end */}
+
+          {/* Mobile navbar section start */}
           <Toolbar sx={navbarStyles.mobileToolbar}>
               <Grid container>
                   <Grid item xs={6}>
@@ -264,6 +267,7 @@ const Navbar = () => {
                   </Grid>
               </Grid>
           </Toolbar>
+         {/* Mobile navbar section end */}
       </Container>
   </AppBar >
   )
