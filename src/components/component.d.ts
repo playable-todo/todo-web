@@ -1,9 +1,10 @@
+import { TodoProps } from "../pages/Todo/todo.interface"
+
 export type searchProps = {
     device: string
 }
 
 // Form Elements Types
-
 export type customTextFieldProps = {
     type: string,
     label: string,
@@ -24,13 +25,15 @@ export type customPasswordFieldProps = {
     handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-
 export type snackbarOptionsProps = {
     message?: string,
     type?: string
 }
 
-
 export type snackBarProps = {
     snackbarOptions: snackbarOptionsProps
+}
+
+export type TodoSectionProp = {
+    data: TodoProps[]
 }
