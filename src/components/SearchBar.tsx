@@ -18,7 +18,7 @@ import { navbarStyles } from '../styles';
 import { searchProps } from './component';
 
 const SearchBar: React.FC<searchProps>  = ({device}) => {
-    console.log(device)
+
     return (
         <Paper component="form" sx={device == 'desktop' ? navbarStyles.inputSearchPaper : navbarStyles.mobileSearchPaper}>
             <InputBase

@@ -29,20 +29,10 @@ import {
 
 // Material UI Icons
 import { 
-    SearchOutlined, 
-    LocationOn, 
-    CameraAlt, 
     Close, 
-    Favorite, 
-    Message, 
-    Help, 
-    Face2,
-    Sms, 
-    Notifications,
     ExpandMore,
     Logout, 
-    ArrowBack,
-    Settings,
+    List as ListIcon,
     Menu as MenuIcon } from '@mui/icons-material';
 
 // Material UI styles
@@ -52,8 +42,10 @@ import { navbarStyles } from '../styles';
 import { Link, useNavigate } from 'react-router-dom';
 
 // Redux
-import store,{ removeAllData} from '../redux/store';
+import store,{ removeAllData } from '../redux/store';
 import { LoginData } from '../redux/interface';
+
+import { Request } from '../helpers/Request';
 
 // Components
 import SearchBar from '../components/SearchBar';
@@ -63,12 +55,15 @@ import LogoImage from '../assets/logo.png'
 
 const Navbar = () => {
   const theme = useTheme();
+  const navigate = useNavigate()
+
    // Redux
   const loginData = store.getState().authUser?.loginData;
 
    // useState elements
   const [mobileNav, setMobileNav] = useState<null | HTMLElement>(null);
   const [userData, setUserData] = useState<LoginData>({});
+  const [profilePopover, setProfilePopover] = useState<null | HTMLElement>(null);
 
   /*
         Gets user data in redux state
@@ -79,34 +74,58 @@ const Navbar = () => {
         }
     },[loginData])
 
-  const openMobileMenu = (event: MouseEvent<HTMLElement>) => {
-    setMobileNav(event.currentTarget);
-  }
-  const closeMobileMenu = () => {
-      setMobileNav(null)
-  }
+    // Functions
 
-  const LogoComponent = () => (
-      <Link to="/" style={{ textDecoration: 'none' }}>
-        <Box sx={{ display :'flex' }}>
-            <IconButton
-                size='small'
-                edge='start'
-                color="inherit"
-                aria-label="logo"
-            >
-                <img src={LogoImage} width={'40'} height={'48'} />
-            </IconButton>
-            <Typography 
-                sx={{
-                  marginTop: 2, 
-                  color: theme.palette.warning.main,
-                  fontWeight: 600
-                }}>To do</Typography>
-          </Box>
-      </Link>
-  )
+    // Profile avatar Menu
+    const LoginOpen = Boolean(profilePopover);
 
+    const handleProfileOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setProfilePopover(event.currentTarget);
+    };
+    const handleProfileClose = () => {
+        setProfilePopover(null);
+    };
+
+    const openMobileMenu = (event: MouseEvent<HTMLElement>) => {
+        setMobileNav(event.currentTarget);
+    }
+    const closeMobileMenu = () => {
+        setMobileNav(null)
+    }
+
+    const LogoComponent = () => (
+        <Link to="/" style={{ textDecoration: 'none' }}>
+            <Box sx={{ display :'flex' }}>
+            <img src={LogoImage} width={'40'} height={'48'} />
+                <Typography 
+                    sx={{
+                    marginTop: 1.6,
+                    marginLeft: 1,
+                    color: theme.palette.warning.main,
+                    fontWeight: 600
+                    }}>To do</Typography>
+            </Box>
+        </Link>
+    )
+
+    const UserAvatar = () => (
+        <Avatar sx={navbarStyles.authAvatar}>{userData.fullname ? userData?.fullname!.charAt(0) : ''}</Avatar>
+    )
+
+      // Logout
+    const handlelogout = async() => {
+        const url = "/oauth/logout";
+        const result = await Request({
+            method: 'GET',
+            url: url
+        });
+
+        if(result){
+            removeAllData();
+            navigate('/');
+            location.reload()
+        }
+    }
 
   return (
     <AppBar position="sticky" sx={navbarStyles.appBar}>
@@ -115,14 +134,50 @@ const Navbar = () => {
 
           <Toolbar sx={navbarStyles.toolbar}> 
               <Grid container>
-                  <Grid item xl={2} lg={2} md={2} sm={6}>
-                      <LogoComponent/>
-                  </Grid>
-                  <Grid item xl={10} lg={10} md={10} sm={6}>
-                    <Box sx={{ marginTop: 1.4 }}>
-                        <SearchBar device="desktop" />
-                    </Box>
-                </Grid>
+                    <Grid item xl={2} lg={2} md={2} sm={6}>
+                        <LogoComponent/>
+                    </Grid>
+                    <Grid item xl={8} lg={8} md={8} sm={6}>
+                            <SearchBar device="desktop" />
+                    </Grid>
+                    <Grid item xl={2} lg={2} md={2} sm={6}>
+                            <IconButton
+                                onClick={handleProfileOpen}
+                                size="small"
+                                sx={navbarStyles.authAvatarIconButton}
+                                aria-controls={LoginOpen ? 'account-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={LoginOpen ? 'true' : undefined}
+                            >
+                                <Avatar sx={navbarStyles.authAvatar}>{userData.fullname ? userData?.fullname!.charAt(0) : ''}</Avatar>
+                                <ExpandMore />
+                            </IconButton>
+                            <Menu
+                                anchorEl={profilePopover}
+                                id="account-menu"
+                                open={LoginOpen}
+                                onClose={handleProfileOpen}
+                                onClick={handleProfileClose}
+                                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                            >
+                                
+                                <MenuItem onClick={handleProfileClose}>
+                                    <UserAvatar />
+                                    <Typography sx={navbarStyles.authMenuAvatarText}>{userData?.fullname}</Typography>
+                                </MenuItem>
+                                <Divider />
+                                <MenuItem onClick={() => { 
+                                    handleProfileClose();
+                                    handlelogout();
+                                }}>
+                                    <ListItemIcon>
+                                        <Logout fontSize="small" />
+                                    </ListItemIcon>
+                                    Çıkış
+                                </MenuItem>
+                            </Menu>
+                    </Grid>
               </Grid>
           </Toolbar>
          
@@ -161,6 +216,43 @@ const Navbar = () => {
                                                     </IconButton>
                                                 </Grid>
                                             </Grid>
+                                            <List sx={navbarStyles.drawerMenuList} aria-label="contacts">
+                                                <ListItem sx={navbarStyles.drawerMobileAvatarListItem}>
+                                                    <ListItemAvatar>
+                                                        <UserAvatar />
+                                                    </ListItemAvatar>
+                                                    <Typography
+                                                        sx={navbarStyles.drawerAvatarLoginText}
+                                                    >{userData?.fullname}</Typography>
+                                                </ListItem>
+                                            </List>
+                                            <Divider />
+                                            <ListItem disablePadding>
+                                                <ListItemButton 
+                                                    sx={navbarStyles.drawerMenuListItemButton}
+                                                    onClick={() => navigate('/')}
+                                                >
+                                                        <ListItemIcon sx={navbarStyles.drawerMenuListItemIcon}>
+                                                            <ListIcon />
+                                                        </ListItemIcon>
+                                                    <ListItemText primary="Todo" />
+                                                </ListItemButton>
+                                            </ListItem>
+                                            <Divider />
+                                            <ListItem disablePadding>
+                                                <ListItemButton 
+                                                    sx={navbarStyles.drawerMenuListItemButton} 
+                                                    onClick={() => {
+                                                        handlelogout();
+                                                        closeMobileMenu();
+                                                    }}
+                                                >
+                                                        <ListItemIcon sx={navbarStyles.drawerMenuListItemIcon}>
+                                                            <Logout />
+                                                        </ListItemIcon>
+                                                    <ListItemText primary="Çıkış" />
+                                                </ListItemButton>
+                                            </ListItem>
                                         </Grid>
                                     </Grid>
                                 </Container>

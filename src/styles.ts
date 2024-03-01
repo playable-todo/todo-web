@@ -13,6 +13,7 @@ export const navbarStyles: Record<string, SxProps<Theme> | undefined> = {
         paddingLeft: { sm: '0px' }
     },
     toolbar: {
+        marginTop: 1.4,
         paddingRight: { sm: '0px' },
         paddingLeft: { sm: '0px', xs: '0' },
         display: { md: 'flex', xs: 'none' }
@@ -32,12 +33,11 @@ export const navbarStyles: Record<string, SxProps<Theme> | undefined> = {
         paddingRight: '24px'
     },
     authAvatarIconButton: {
-        ml: 2
+        float: 'right'
     },
     authAvatar: {
         width: 32,
-        height: 32,
-        marginRight: '5px'
+        height: 32
     },
     authMenuAvatar: {
         width: '56px !important',
