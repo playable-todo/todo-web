@@ -16,7 +16,7 @@ function App() {
         {publicRoutes.map((route, idx) => (
           <Route
             path={route.path}
-            element={<Layout>{route.component}</Layout>}
+            element={<>{route.component}</>}
             key={idx}
           />
         ))}
