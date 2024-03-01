@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { 
     TextField, 
     InputAdornment,
     IconButton,
     OutlinedInput,
-    InputLabel,
-    Button
+    InputLabel
 } from '@mui/material';
 
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -72,10 +71,12 @@ export const CustomPasswordField: React.FC<customPasswordFieldProps>  = ({
                 fullWidth
                 type={showPassword ? 'text' : 'password'}
                 name={name}
+                id={name}
                 onChange={handleChange}
                 value={value}
                 error={hasError ? Boolean(value == '' && hasError) : false}
                 placeholder={placeholder ? placeholder : label}
+                autoComplete={name}
                 endAdornment={
                     <InputAdornment position="end">
                       <IconButton
