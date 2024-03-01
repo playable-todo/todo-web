@@ -73,7 +73,7 @@ export async function HandleLoginToken(username: string, password: string) {
 } 
 
 /*
-    gives access token for  expired and invalid access token 
+    gives access token for expired and invalid access token 
 */
 export async function GetClientAccessToken(){
    
@@ -208,6 +208,33 @@ export async function Request(parameters: ParametersProps): Promise <object[]> {
         }
        
         return await Request(parameters);
+    }
+
+    const data = await response.json();
+
+    return data;
+}
+
+/*
+    Management Request for everyone
+*/
+export async function RequestPublic(parameters: ParametersProps): Promise <object[]> {
+    const {method, url, formData} = parameters
+
+    const appEndpoint = EndPoint + url;
+    
+    const options: Options = {
+        method: method
+    }
+
+    if (method == 'POST' || method == 'PUT' || method == "PATCH") {
+        options.body = formData ? formData : undefined;
+    }
+   
+    const response: Response = await fetch(appEndpoint, options)
+
+    if ((response.status == 401 || response.status == 403)) {
+        return await RequestPublic(parameters);
     }
 
     const data = await response.json();
