@@ -18,7 +18,6 @@ import { HandleLoginToken, Request, RequestPublic } from "../../helpers/Request"
 
 // Components
 import { CustomTextField, CustomPasswordField } from '../../components/FormElements';
-import { snackbarOptionsProps } from '../../components/component';
 import { SnackbarAlert } from '../../components/SnackbarAlert';
 
 // Redux
@@ -27,6 +26,9 @@ import { setLoginData, useAppDispatch} from "../../redux/store";
 // Other npm packages
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+
+// interface
+import { snackbarOptionsProps } from '../../components/component';
 
 export default function Login() {
   // Redux and react router

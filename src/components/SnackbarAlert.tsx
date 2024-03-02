@@ -6,10 +6,7 @@ import { snackBarProps, snackbarOptionsProps } from './component';
 
 export const SnackbarAlert: React.FC<snackBarProps> = ({snackbarOptions}) => {
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<snackbarOptionsProps>({
-    type: 'error',
-    message: ''
-  })
+  const [options, setOptions] = useState<snackbarOptionsProps>({})
   
   useEffect(() => {
     setOpen(true);
@@ -34,7 +31,6 @@ export const SnackbarAlert: React.FC<snackBarProps> = ({snackbarOptions}) => {
         <Alert
             onClose={handleClose}
             severity={options.type == "success" ? "success" : options.type == "error" ? "error" : options.type == "info" ? "info" : "warning"} 
-            color="error"
             variant="filled"
             sx={{ width: '100%' }}
         >
