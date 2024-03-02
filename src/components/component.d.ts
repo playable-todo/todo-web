@@ -25,6 +25,15 @@ export type customPasswordFieldProps = {
     handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
+export type FileUploadInputProps = {
+    label: string,
+    name: string,
+    type: string,
+    handleOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    setAlert: React.Dispatch<React.SetStateAction<snackbarOptionsProps>>,
+    handleFormik: any,
+}
+
 export type snackbarOptionsProps = {
     message?: string,
     type?: string
