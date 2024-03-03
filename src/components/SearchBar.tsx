@@ -7,30 +7,27 @@ import {
     Button
   } from "@mui/material"
 
-  // Material UI Icons
-import { 
-    SearchOutlined } from '@mui/icons-material';
-
-    
-// Material UI styles
+  // Material UI Icons and styles
+import { SearchOutlined } from '@mui/icons-material';
 import { searchbarStyles } from '../styles';
 
+// Other npm packes
+import slugify from 'react-slugify';
 import { useFormik } from 'formik';
 
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
+// Interfaces
 import { searchProps } from './component';
 
-import { useNavigate } from 'react-router-dom';
-
-import slugify from 'react-slugify';
-
-import { useSearchParams } from 'react-router-dom';
-
 const SearchBar: React.FC<searchProps>  = ({device}) => {
-    const navigate = useNavigate();
+  
     // React Router
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get('search');
 
+    // search Formik
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -69,7 +66,6 @@ const SearchBar: React.FC<searchProps>  = ({device}) => {
                     onChange={formik.handleChange}
                     value={formik.values.search}
                 />
-                
             </form>
         </Paper>
     )
