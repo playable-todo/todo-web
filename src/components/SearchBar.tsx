@@ -2,7 +2,6 @@ import React from 'react'
 
 // Material UI elements
 import { 
-    IconButton,  
     Paper, 
     InputBase,
     Button
@@ -14,7 +13,7 @@ import {
 
     
 // Material UI styles
-import { navbarStyles } from '../styles';
+import { searchbarStyles } from '../styles';
 
 import { useFormik } from 'formik';
 
@@ -48,22 +47,23 @@ const SearchBar: React.FC<searchProps>  = ({device}) => {
     })
 
     return (
-        <Paper component="form" sx={device == 'desktop' ? navbarStyles.inputSearchPaper : navbarStyles.mobileSearchPaper}>
+        <Paper component="form" sx={device == 'desktop' ? searchbarStyles.inputSearchPaper : searchbarStyles.mobileSearchPaper}>
             <form
                 onSubmit={formik.handleSubmit}
             >
                 <InputBase
-                    sx={navbarStyles.inputSearchAreaInputBase}
+                    sx={searchbarStyles.inputSearchAreaInputBase}
                     placeholder="Arama Yapın"
                     name="search"
-                    size='small'
                     startAdornment={
                         <Button
                             type="submit"
                             size='small'
                             color="primary"
-                            aria-label="directions">
-                            <SearchOutlined sx={navbarStyles.searchIcon} />
+                            aria-label="directions"
+                            sx={searchbarStyles.searchButton}
+                        >
+                            <SearchOutlined sx={searchbarStyles.searchIcon} />
                         </Button>
                     }
                     onChange={formik.handleChange}

@@ -1,14 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // Material UI elements
 import { 
   Container,
   Grid, 
-  Button, 
-  Avatar,
-  Chip,
+  Button,
   Card,
-  CardActions,
   CardContent,
   Box,
   Typography,
