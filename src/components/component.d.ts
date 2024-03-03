@@ -25,12 +25,33 @@ export type customPasswordFieldProps = {
     handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
+export type FileViewSectionProps = {
+    file: any[],
+    type: string,
+    removeFunc: (param: number) => void,
+    isOld: boolean,
+}
+
+
 export type FileUploadInputProps = {
     label: string,
     name: string,
+    oldFileName: string,
     type: string,
-    handleOnChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
     setAlert: React.Dispatch<React.SetStateAction<snackbarOptionsProps>>,
+    handleFormik: any,
+}
+
+export type FileProps = {
+    url?: string,
+    path?: string,
+    mimeType?: string
+}
+
+export type OldFileInputProps = {
+    name: string,
+    value: FileProps[],
+    type: string,
     handleFormik: any,
 }
 
@@ -44,5 +65,6 @@ export type snackBarProps = {
 }
 
 export type TodoSectionProp = {
-    data: TodoProps[]
+    data: TodoProps[],
+    handleTodoOpen: (param: TodoProps) => void;
 }
