@@ -112,11 +112,59 @@ export const searchbarStyles: Record<string, SxProps<Theme> | undefined> = {
         }
     },
     searchButton: {
-        padding: '0px'
+        padding: 0
     },
     searchIcon: {
         margin: '5px 25px 8px 5px',
-        fontSize: '25px',
+        fontSize: {
+            lg: '25px', md: '25px', sm: '20px', xs: '20px'
+        },
         color:'gray'
     }
 }   
+
+export const formElementsStyles: Record<string, SxProps<Theme> | undefined> = {
+    elementsBox: {
+        marginTop: 2
+    },
+    bottomButtonBox: {
+        marginTop: 4
+    },
+    bottomSubmitButtonBox: {
+        float: 'right'
+    }
+}
+
+export const listPageStyles: Record<string, SxProps<Theme> | undefined> = {
+    // Side tags
+    sideTagsBox: {
+        marginTop: 4,
+        height: 1,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+    },
+    sideTagsList: {
+        width: '100%', 
+        maxWidth: 260, 
+        bgcolor: 'background.paper'
+    },
+
+    // todo section
+    todoAddCard: {
+        marginTop: 4
+    },
+    todoViewListBox :{
+        marginTop: 4
+    },
+
+    // Dialog section
+    dialogTitle:{
+        display :'contents', 
+        fontSize: '16px', 
+        fontWeight: 600
+    },
+    dialogTopCloseIcon: {
+        float: 'right', 
+        padding: 0
+    }
+}

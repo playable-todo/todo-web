@@ -22,28 +22,33 @@ import {
   ListItemText
 } from '@mui/material'
 
+// Material UI icons and styles
 import { Close, Delete, Bookmarks } from '@mui/icons-material';
+import { formElementsStyles, listPageStyles } from '../../styles';
 
+// Helpers
 import { Request } from '../../helpers/Request';
 
+// Components
+import { 
+    CustomTextField,
+    FileUploadInput,
+    OldFileInput,
+    CustomSelectField
+} from '../../components/FormElements';
+import { SnackbarAlert } from '../../components/SnackbarAlert';
 import TodoSection from '../../components/TodoSection';
 
-import { 
-  CustomTextField,
-  FileUploadInput,
-  OldFileInput,
-  CustomSelectField
-} from '../../components/FormElements';
+// Other npm packages
 import { useFormik } from 'formik';
-import { SnackbarAlert } from '../../components/SnackbarAlert';
+import { useSearchParams } from 'react-router-dom';
 
-
+// Interfaces
 import { TodoProps, TagsProps } from './todo.interface';
 import { snackbarOptionsProps } from '../../components/component';
 
-import { useSearchParams } from 'react-router-dom';
-
 const Lists = () => {
+    // React Router elements
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get('search');
     const tagQuery = searchParams.get('tag');
@@ -57,10 +62,13 @@ const Lists = () => {
     const [filters, setFilters] = useState<string[]>([]);
 
     // useEffects
+
+    // Retrieves data from backend
     useEffect(() => {
         getTodoFromApi();
     }, [])
 
+    // Retrieves elements to be filtered
     useEffect(() => {
         const updateParams = [];
         if(searchQuery){
@@ -73,6 +81,7 @@ const Lists = () => {
         setFilters(updateParams)
     }, [searchQuery, tagQuery])
 
+    // Filters Todo's
     useEffect(() => {
         if(filters.length > 0){
             getTodoFromApi();
@@ -80,6 +89,8 @@ const Lists = () => {
     }, [filters])
 
     // formik
+
+    // Add form and process
     const addFormik = useFormik({
       initialValues: {
           title: '',
@@ -139,6 +150,7 @@ const Lists = () => {
       }
     });
 
+    // Edit form and process
     const editFormik = useFormik({
       enableReinitialize: true,
       initialValues: {
@@ -210,6 +222,9 @@ const Lists = () => {
       }
     });
 
+    // Functions
+
+    // Sends a request to fetch data from the database
     const getTodoFromApi = async() => {
         const url = '/todo/list';
         const fullUrl = url + (filters.length > 0 ?  "?" + filters.join("&"): "")
@@ -223,6 +238,7 @@ const Lists = () => {
         return result
     }
 
+    // Filters by tags
     const handleSearchTag = (tag_id:string) => {
         setSearchParams((prev) => {
             prev.set("tag", tag_id);
@@ -230,16 +246,7 @@ const Lists = () => {
         });
     }
 
-    const handleClose = () => {
-        setOpen(false);
-        setEditData({});
-    };
-
-    const handleTodoOpen = (todo: TodoProps) => {
-      setOpen(true)
-      setEditData(todo)
-    }
-
+    // Deletes Todos
     const handleDeleteTodo = async() => {
         const url = '/todo/list/' + editData?.todo_id;
 
@@ -266,15 +273,32 @@ const Lists = () => {
         } 
     }
 
+    // Dialog (Modal) process
+
+    // Closes modal
+    const handleClose = () => {
+        setOpen(false);
+        setEditData({});
+    };
+
+    // Todo opens edit modal
+    const handleTodoOpen = (todo: TodoProps) => {
+        setOpen(true)
+        setEditData(todo)
+    }
+
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
+    // Forms
+
+    // Todo add form
     const addForm = (
       <form
           method='POST'
           onSubmit={addFormik.handleSubmit}
       >
-        <Box sx={{ marginTop: 2 }}>
+        <Box sx={formElementsStyles.elementsBox}>
             <CustomTextField 
                 label='Başlık'
                 type='text'
@@ -286,7 +310,7 @@ const Lists = () => {
                 size="small"
             />
         </Box>
-        <Box sx={{ marginTop: 2 }}>
+        <Box sx={formElementsStyles.elementsBox}>
             <CustomTextField 
                 label='Todo'
                 type='text'
@@ -298,7 +322,7 @@ const Lists = () => {
                 size="small"
             />
         </Box>
-        <Box sx={{ marginTop: 2 }}>
+        <Box sx={formElementsStyles.elementsBox}>
             <CustomSelectField 
                 label="Tag"
                 name="selectedTag"
@@ -308,7 +332,7 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-        <Box sx={{ marginTop: 2 }}>
+        <Box sx={formElementsStyles.elementsBox}>
             <FileUploadInput 
                 label="Görsel Ekle"
                 name='photo'
@@ -318,7 +342,7 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-        <Box sx={{ marginTop: 2 }}>
+        <Box sx={formElementsStyles.elementsBox}>
             <FileUploadInput 
                 label="Ek dosya"
                 name='attachment'
@@ -328,7 +352,7 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-        <Box sx={{ marginTop: 4 }}>
+        <Box sx={formElementsStyles.bottomButtonBox}>
             <Grid container>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
                     <Button 
@@ -338,7 +362,7 @@ const Lists = () => {
                     >Vazgeç</Button>
                 </Grid>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
-                    <Box sx={{ float: 'right' }}>  
+                    <Box sx={formElementsStyles.bottomSubmitButtonBox}>  
                         <Button 
                             type='submit'
                             color="success"
@@ -350,13 +374,14 @@ const Lists = () => {
         </Box>
       </form>
     )
-
+    
+    // Todo edit form
     const editForm  = (
       <form
         method='PUT'
         onSubmit={editFormik.handleSubmit}
       >
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
             <CustomTextField 
                 label='Başlık'
                 type='text'
@@ -368,7 +393,7 @@ const Lists = () => {
                 size="small"
             />
           </Box>
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
               <CustomTextField 
                   label='Todo'
                   type='text'
@@ -380,7 +405,7 @@ const Lists = () => {
                   size="small"
               />
           </Box>
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
             <CustomSelectField 
                   label="Tag"
                   name="selectedTag"
@@ -390,7 +415,7 @@ const Lists = () => {
                   handleFormik={editFormik}
             />
           </Box>
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
               <FileUploadInput 
                   label="Görsel Ekle"
                   name='photo'
@@ -400,7 +425,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
               <OldFileInput 
                   name="oldImage"
                   value={editFormik.values.oldImage ? [editFormik.values.oldImage]: []}
@@ -408,7 +433,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
               <FileUploadInput 
                   label="Ek dosya"
                   name='attachment'
@@ -418,7 +443,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={{ marginTop: 2 }}>
+          <Box sx={formElementsStyles.elementsBox}>
               <OldFileInput 
                   name="oldattachment"
                   value={editFormik.values.oldattachment ? [editFormik.values.oldattachment]: []}
@@ -426,7 +451,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={{ marginTop: 4 }}>
+          <Box sx={formElementsStyles.bottomButtonBox}>
             <Grid container>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
                     <Button 
@@ -436,7 +461,7 @@ const Lists = () => {
                     ><Delete /> Todo sil</Button>
                 </Grid>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
-                    <Box sx={{ float: 'right' }}>  
+                    <Box sx={formElementsStyles.bottomSubmitButtonBox}>  
                         <Button 
                             type='submit'
                             color="success"
@@ -446,59 +471,55 @@ const Lists = () => {
                 </Grid>
             </Grid>
           </Box>
-          
       </form>
     )
 
     return (
       <Container>
+        {/* Snackbar for alerts */}
         {Object.keys(snackbarData).length > 0 && <SnackbarAlert snackbarOptions={snackbarData} />}
         <Grid container>
-            <Grid item xl={3} lg={3} md={3} sm={6} xs={12}>
-                <Box 
-                  sx={{
-                    marginTop: 4,
-                    height: 1,
-                    position: 'fixed',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover'
-                  }}
-                >
-                  <List
-                    sx={{ width: '100%', maxWidth: 400, bgcolor: 'background.paper' }}
-                    aria-label="contacts"
-                  >
-                  {tags.length > 0 && tags.map((item, key) => (
-                    <ListItem onClick={() => handleSearchTag(item?.tag_id!)} disablePadding key={key}>
-                      <ListItemButton>
-                        <ListItemIcon>
-                           <Bookmarks /> 
-                        </ListItemIcon>
-                        <ListItemText primary={item.title} />
-                      </ListItemButton>
-                    </ListItem>
-                   ))}
-                  </List>
+            {/* Side tags section */}
+            <Grid item xl={3} lg={3} md={3} sm={12} xs={12}>
+                <Box sx={listPageStyles.sideTagsBox}>
+                    <List
+                        sx={listPageStyles.sideTagsList}
+                        aria-label="contacts"
+                    >
+                    {tags.length > 0 && tags.map((item, key) => (
+                        <ListItem onClick={() => handleSearchTag(item?.tag_id!)} disablePadding key={key}>
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <Bookmarks /> 
+                                </ListItemIcon>
+                                <ListItemText primary={item.title} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                    </List>
                 </Box>
             </Grid> 
-            <Grid item xl={9} lg={9} md={9} sm={6} xs={12}>
-                 <Card variant="outlined" sx={{ marginTop: 4 }}>
+            {/* Todo section */}
+            <Grid item xl={9} lg={9} md={9} sm={12} xs={12}>
+                {/* Todo add section */}
+                 <Card variant="outlined" sx={listPageStyles.todoAddCard}>
                       <CardContent sx={{ display: 'contents' }}>
                             <CustomTextField 
-                              label=''
-                              type='text'
-                              name='dummy'
-                              value=''
-                              placeholder='Bi to-do ekleyin'
-                              sx={{
-                                "& fieldset": { border: 'none' },
-                              }}
-                              size="small"
-                              onClick={() => setOpen(true)}
+                                label=''
+                                type='text'
+                                name='dummy'
+                                value=''
+                                placeholder='Bi to-do ekleyin'
+                                sx={{
+                                    "& fieldset": { border: 'none' },
+                                }}
+                                size="small"
+                                onClick={() => setOpen(true)}
                           />
                       </CardContent>
                   </Card>
-                  <Box sx={{ marginTop: 4 }}>
+                    {/* Todo view section */}
+                  <Box sx={listPageStyles.todoViewListBox}>
                       {todo.length > 0  && (
                           <TodoSection 
                             data={todo} 
@@ -508,6 +529,7 @@ const Lists = () => {
                   </Box>
             </Grid> 
         </Grid>
+        {/* Dialog section */}
         <Dialog
             open={open}
             onClose={handleClose}
@@ -516,20 +538,22 @@ const Lists = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-           <DialogTitle id="alert-dialog-title">
+            <DialogTitle id="alert-dialog-title">
                 <Box sx={{ display :'block' }}>
-
-                    <Typography sx={{ display :'contents', fontSize: '16px', fontWeight: 600 }}>
+                    {/* Dialog Top Title */}
+                    <Typography sx={listPageStyles.dialogTitle}>
                          {Object.keys(editData).length > 0 ? 'Todo görüntüleme' : 'Bir Todo Ekleyin'}
                     </Typography>
-                    <IconButton onClick={() => handleClose()} sx={{ float: 'right', padding: 0 }}>
+                    {/* Dialog Top close icon section */}
+                    <IconButton onClick={() => handleClose()} sx={listPageStyles.dialogTopCloseIcon}>
                         <Close fontSize='large' />
                     </IconButton>
                 </Box>
             </DialogTitle>
+            {/* Dialog Content section */}
             <DialogContent 
               sx={{ 
-                  width: fullScreen ? '100%' : '500px',
+                  width: fullScreen ? 'none' : '500px',
                   display:'block'
               }}
             >
