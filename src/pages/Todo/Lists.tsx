@@ -17,10 +17,15 @@ import {
   DialogTitle,
   useMediaQuery,
   useTheme,
-  IconButton
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material'
 
-import { Close, Delete } from '@mui/icons-material';
+import { Close, Delete, Bookmarks } from '@mui/icons-material';
 
 import { Request } from '../../helpers/Request';
 
@@ -29,19 +34,21 @@ import TodoSection from '../../components/TodoSection';
 import { 
   CustomTextField,
   FileUploadInput,
-  OldFileInput
+  OldFileInput,
+  CustomSelectField
 } from '../../components/FormElements';
 import { useFormik } from 'formik';
 import { SnackbarAlert } from '../../components/SnackbarAlert';
 
 
-import { TodoProps } from './todo.interface';
+import { TodoProps, TagsProps } from './todo.interface';
 import { snackbarOptionsProps } from '../../components/component';
 
 const Lists = () => {
     // useStates
     const [open, setOpen] = useState(false);
     const [todo, setTodo] = useState<TodoProps[]>([]);
+    const [tags, setTags] = useState<TagsProps[]>([]);
     const [editData, setEditData] = useState<TodoProps | any>({})
     const [snackbarData, setSnackbarData] = useState<snackbarOptionsProps>({});
 
@@ -56,12 +63,13 @@ const Lists = () => {
           title: '',
           todo: '',
           photo: '',
-          attachment: ''
+          attachment: '',
+          selectedTag: ''
       },
       onSubmit: async (values) => {
-        const {title, todo, photo, attachment} = values;
-
-       if (title == '') {
+        const {title, todo, photo, attachment, selectedTag} = values;
+        
+        if (title == '') {
             setSnackbarData({
               type: 'error',
               message: 'Lütfen gerekli alanları doldurunuz.'
@@ -77,6 +85,7 @@ const Lists = () => {
             const formdata: FormData = new FormData();
             formdata.append("title", title);
             formdata.append("todo", todo);
+            formdata.append("selected_tag", selectedTag);
             photo && formdata.append('file', photo);
             attachment && formdata.append('file', attachment);
 
@@ -104,7 +113,7 @@ const Lists = () => {
                 })
             } 
 
-        }
+        } 
       }
     });
 
@@ -184,7 +193,8 @@ const Lists = () => {
             url: url
         });
 
-        setTodo(result);
+        setTodo(result.todos);
+        setTags(result.tags)
         return result
     }
 
@@ -222,7 +232,6 @@ const Lists = () => {
               message: 'Bir hata oluştu'
             })
         } 
-
     }
 
     const theme = useTheme();
@@ -256,9 +265,21 @@ const Lists = () => {
             />
         </Box>
         <Box sx={{ marginTop: 2 }}>
+            <CustomSelectField 
+                label="Tag"
+                name="selectedTag"
+                value={addFormik.values.selectedTag}
+                selectItems={tags}
+                hasError={Boolean(addFormik.touched.selectedTag)}
+                handleFormik={addFormik}
+            />
+        </Box>
+
+        <Box sx={{ marginTop: 2 }}>
             <FileUploadInput 
                 label="Görsel Ekle"
                 name='photo'
+                oldFileName=''
                 type="image"
                 setAlert={setSnackbarData}
                 handleFormik={addFormik}
@@ -268,6 +289,7 @@ const Lists = () => {
             <FileUploadInput 
                 label="Ek dosya"
                 name='attachment'
+                oldFileName=''
                 type="attachment"
                 setAlert={setSnackbarData}
                 handleFormik={addFormik}
@@ -387,20 +409,34 @@ const Lists = () => {
       <Container>
         {Object.keys(snackbarData).length > 0 && <SnackbarAlert snackbarOptions={snackbarData} />}
         <Grid container>
-            <Grid item xl={2} lg={2} md={2} sm={6} xs={12}>
+            <Grid item xl={3} lg={3} md={3} sm={6} xs={12}>
                 <Box 
                   sx={{
+                    marginTop: 4,
                     height: 1,
                     position: 'fixed',
-                    backgroundImage: `url('/assets/images/background/nav-bg.png');`,
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover'
                   }}
                 >
-                  <Typography>Side Nav</Typography>
+                  <List
+                    sx={{ width: '100%', maxWidth: 400, bgcolor: 'background.paper' }}
+                    aria-label="contacts"
+                  >
+                  {tags.length > 0 && tags.map((item, key) => (
+                    <ListItem disablePadding key={key}>
+                      <ListItemButton>
+                        <ListItemIcon>
+                           <Bookmarks /> 
+                        </ListItemIcon>
+                        <ListItemText primary={item.title} />
+                      </ListItemButton>
+                    </ListItem>
+                   ))}
+                  </List>
                 </Box>
             </Grid> 
-            <Grid item xl={10} lg={10} md={10} sm={6} xs={12}>
+            <Grid item xl={9} lg={9} md={9} sm={6} xs={12}>
                  <Card variant="outlined" sx={{ marginTop: 4 }}>
                       <CardContent sx={{ display: 'contents' }}>
                             <CustomTextField 
