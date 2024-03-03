@@ -24,7 +24,7 @@ import {
 
 // Material UI icons and styles
 import { Close, Delete, Bookmarks } from '@mui/icons-material';
-import { formElementsStyles, listPageStyles } from '../../styles';
+import { listPageStyles } from '../../styles';
 
 // Helpers
 import { Request } from '../../helpers/Request';
@@ -298,7 +298,7 @@ const Lists = () => {
           method='POST'
           onSubmit={addFormik.handleSubmit}
       >
-        <Box sx={formElementsStyles.elementsBox}>
+        <Box sx={listPageStyles.elementsBox}>
             <CustomTextField 
                 label='Başlık'
                 type='text'
@@ -310,7 +310,7 @@ const Lists = () => {
                 size="small"
             />
         </Box>
-        <Box sx={formElementsStyles.elementsBox}>
+        <Box sx={listPageStyles.elementsBox}>
             <CustomTextField 
                 label='Todo'
                 type='text'
@@ -322,7 +322,7 @@ const Lists = () => {
                 size="small"
             />
         </Box>
-        <Box sx={formElementsStyles.elementsBox}>
+        <Box sx={listPageStyles.elementsBox}>
             <CustomSelectField 
                 label="Tag"
                 name="selectedTag"
@@ -332,7 +332,7 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-        <Box sx={formElementsStyles.elementsBox}>
+        <Box sx={listPageStyles.elementsBox}>
             <FileUploadInput 
                 label="Görsel Ekle"
                 name='photo'
@@ -342,7 +342,7 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-        <Box sx={formElementsStyles.elementsBox}>
+        <Box sx={listPageStyles.elementsBox}>
             <FileUploadInput 
                 label="Ek dosya"
                 name='attachment'
@@ -352,7 +352,7 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-        <Box sx={formElementsStyles.bottomButtonBox}>
+        <Box sx={listPageStyles.bottomButtonBox}>
             <Grid container>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
                     <Button 
@@ -362,7 +362,7 @@ const Lists = () => {
                     >Vazgeç</Button>
                 </Grid>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
-                    <Box sx={formElementsStyles.bottomSubmitButtonBox}>  
+                    <Box sx={listPageStyles.bottomSubmitButtonBox}>  
                         <Button 
                             type='submit'
                             color="success"
@@ -381,7 +381,7 @@ const Lists = () => {
         method='PUT'
         onSubmit={editFormik.handleSubmit}
       >
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
             <CustomTextField 
                 label='Başlık'
                 type='text'
@@ -393,7 +393,7 @@ const Lists = () => {
                 size="small"
             />
           </Box>
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
               <CustomTextField 
                   label='Todo'
                   type='text'
@@ -405,7 +405,7 @@ const Lists = () => {
                   size="small"
               />
           </Box>
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
             <CustomSelectField 
                   label="Tag"
                   name="selectedTag"
@@ -415,7 +415,7 @@ const Lists = () => {
                   handleFormik={editFormik}
             />
           </Box>
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
               <FileUploadInput 
                   label="Görsel Ekle"
                   name='photo'
@@ -425,7 +425,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
               <OldFileInput 
                   name="oldImage"
                   value={editFormik.values.oldImage ? [editFormik.values.oldImage]: []}
@@ -433,7 +433,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
               <FileUploadInput 
                   label="Ek dosya"
                   name='attachment'
@@ -443,7 +443,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={formElementsStyles.elementsBox}>
+          <Box sx={listPageStyles.elementsBox}>
               <OldFileInput 
                   name="oldattachment"
                   value={editFormik.values.oldattachment ? [editFormik.values.oldattachment]: []}
@@ -451,7 +451,7 @@ const Lists = () => {
                   handleFormik={editFormik}
               />
           </Box>
-          <Box sx={formElementsStyles.bottomButtonBox}>
+          <Box sx={listPageStyles.bottomButtonBox}>
             <Grid container>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
                     <Button 
@@ -461,7 +461,7 @@ const Lists = () => {
                     ><Delete /> Todo sil</Button>
                 </Grid>
                 <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
-                    <Box sx={formElementsStyles.bottomSubmitButtonBox}>  
+                    <Box sx={listPageStyles.bottomSubmitButtonBox}>  
                         <Button 
                             type='submit'
                             color="success"

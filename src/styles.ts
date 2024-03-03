@@ -1,5 +1,6 @@
 import { SxProps, Theme } from "@mui/material";
 
+// Layout/Navbar.tsx
 export const navbarStyles: Record<string, SxProps<Theme> | undefined> = {
     appBar: {
         bgcolor: 'hsla(0,0%,100%,.87)', 
@@ -85,6 +86,7 @@ export const navbarStyles: Record<string, SxProps<Theme> | undefined> = {
     },
 } 
 
+// component/SearchBar.tsx
 export const searchbarStyles: Record<string, SxProps<Theme> | undefined> = {
     mobileSearchPaper: {
         display: 'flex', 
@@ -123,6 +125,7 @@ export const searchbarStyles: Record<string, SxProps<Theme> | undefined> = {
     }
 }   
 
+// component/FormElements
 export const formElementsStyles: Record<string, SxProps<Theme> | undefined> = {
     elementsBox: {
         marginTop: 2
@@ -135,7 +138,19 @@ export const formElementsStyles: Record<string, SxProps<Theme> | undefined> = {
     }
 }
 
+// pages/Todo/Lists.tsx
 export const listPageStyles: Record<string, SxProps<Theme> | undefined> = {
+    // Forms section
+    elementsBox: {
+        marginTop: 2
+    },
+    bottomButtonBox: {
+        marginTop: 4
+    },
+    bottomSubmitButtonBox: {
+        float: 'right'
+    },
+    
     // Side tags
     sideTagsBox: {
         marginTop: 4,
