@@ -168,3 +168,24 @@ export const listPageStyles: Record<string, SxProps<Theme> | undefined> = {
         padding: 0
     }
 }
+
+// components/TodoSection
+export const todoSectionStyles: Record<string, SxProps<Theme> | undefined> = {
+    cardContentTitle: {
+        fontSize: '16px', 
+        fontWeight: 600, 
+        marginBottom: 1
+    },
+    cardContent: {
+        fontSize: '16px', 
+        marginBottom: 1
+    },
+    cardImageBox : {
+        display: 'inline-flex'
+    },
+    cardImage : {
+        width: 40, 
+        marginRight: '5px', 
+        border: '2px solid #7c4b00'
+    }
+}

@@ -1,5 +1,6 @@
 import React from 'react'
 
+// Material UI elements
 import { 
     Box,
     Grid,
@@ -12,12 +13,16 @@ import {
     Chip
 } from '@mui/material';
 
+import { todoSectionStyles } from '../styles';
 
 // İnterfaces
 import { TodoSectionProp } from './component';
 
 const TodoSection: React.FC<TodoSectionProp> = ({ data, handleTodoOpen }) => {
+    // Material UI settings
     const theme = useTheme();
+
+    // ENV
     const EndPoint = import.meta.env.VITE_ENDPOINT;
 
     return (
@@ -34,17 +39,17 @@ const TodoSection: React.FC<TodoSectionProp> = ({ data, handleTodoOpen }) => {
                         onClick={() => handleTodoOpen(item)}
                     >
                         <CardContent>
-                            <Typography sx={{ fontSize: '16px', fontWeight: 600, marginBottom: 1 }}>
+                            <Typography sx={todoSectionStyles.cardContentTitle}>
                                     {item.title}
                             </Typography>
-                            <Typography sx={{ fontSize: '16px', marginBottom: 1 }}>
+                            <Typography sx={todoSectionStyles.cardContent}>
                                     {item.content}
                             </Typography>
                             {item?.image !== null  && (
-                                <Box sx={{ display: 'inline-flex' }}>
+                                <Box sx={todoSectionStyles.cardImageBox}>
                                     <Avatar 
                                         src={EndPoint + item?.image?.url}  
-                                        sx={{ width: 40, marginRight: '5px', border: '2px solid #7c4b00' }}
+                                        sx={todoSectionStyles.cardImage}
                                     />
                                 </Box>
                             )}
