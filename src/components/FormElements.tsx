@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+
+// Material UI elements
 import { 
     Typography,
     TextField, 
@@ -12,8 +14,11 @@ import {
     MenuItem
 } from '@mui/material';
 
+// Material UI icons and styles
 import { Visibility, VisibilityOff, Add, Close } from '@mui/icons-material';
+import { formElementsStyles } from '../styles';
 
+// Interfaces
 import { 
     customPasswordFieldProps, 
     customTextFieldProps,
@@ -113,8 +118,10 @@ export const FileViewSection: React.FC<FileViewSectionProps> = ({file, type, rem
     const onButtonClick = (url: string) => {
         const pdfUrl = "Sample.pdf";
         const link = document.createElement("a");
+
         link.href = pdfUrl;
         link.download = url; // specify the filename
+        
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -125,12 +132,7 @@ export const FileViewSection: React.FC<FileViewSectionProps> = ({file, type, rem
         {file.length > 0 && file.map((item, key) => (
             <>
             <Box 
-                sx={{
-                    position: 'relative', 
-                    margin: '20px 20px 10px 0px' ,
-                    display: 'inline-block', 
-                    border: '2px solid #7c4b00'
-                }} 
+                sx={formElementsStyles.imageBox} 
                 key={key}
             >
                 {isOld ? (
@@ -158,34 +160,18 @@ export const FileViewSection: React.FC<FileViewSectionProps> = ({file, type, rem
                         <Typography sx={{ p: 2, marginRight:4 }}>{item.name}</Typography>
                     ))
                 )}             
-                    <Box sx={{
-                        position: 'absolute', 
-                        top: 0, 
-                        right: 0, 
-                        padding: '5px', 
-                        display: 'flex', 
-                        flexDirection: 'column'
-                    }}>
+                    <Box sx={formElementsStyles.closeIconBox}>
                         <IconButton 
                             aria-label="remove to todo" 
                             onClick={() => removeFunc(key)}
-                            sx={{
-                                border: '2px solid red',
-                                borderRadius: 3, 
-                                '&:hover': {
-                                    backgroundColor :'#FFFFFF'
-                                },
-                            }}
+                            sx={formElementsStyles.closeIconButton}
                         >
-                            <Close sx={{
-                                fontSize: '16px',
-                                color: 'red' 
-                            }} />
+                            <Close sx={formElementsStyles.closeIcon} />
                         </IconButton>
                     </Box>
             </Box>
                 {isOld && type !== 'image' && (
-                    <Box sx={{ display :'grid' }}>
+                    <Box sx={formElementsStyles.processBox}>
                         <Typography
                             href={EndPoint + item.url}
                             component="a"
@@ -196,7 +182,7 @@ export const FileViewSection: React.FC<FileViewSectionProps> = ({file, type, rem
                         
                         <Typography
                             onClick={() => onButtonClick(EndPoint + item.url)}
-                            sx={{ color: 'blue', cursor: 'pointer' }}
+                            sx={formElementsStyles.dowloadProcessText}
                         >
                             İndir
                         </Typography>

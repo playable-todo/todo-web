@@ -127,14 +127,38 @@ export const searchbarStyles: Record<string, SxProps<Theme> | undefined> = {
 
 // component/FormElements
 export const formElementsStyles: Record<string, SxProps<Theme> | undefined> = {
-    elementsBox: {
-        marginTop: 2
+    // FileViewSection
+    imageBox: {
+        position: 'relative', 
+        margin: '20px 20px 10px 0px' ,
+        display: 'inline-block', 
+        border: '2px solid #7c4b00'
     },
-    bottomButtonBox: {
-        marginTop: 4
+    closeIconBox: {
+        position: 'absolute', 
+        top: 0, 
+        right: 0, 
+        padding: '5px', 
+        display: 'flex', 
+        flexDirection: 'column'
     },
-    bottomSubmitButtonBox: {
-        float: 'right'
+    closeIconButton : {
+        border: '2px solid red',
+        borderRadius: 3, 
+        '&:hover': {
+            backgroundColor :'#FFFFFF'
+        },
+    },
+    closeIcon: {
+        fontSize: '16px',
+        color: 'red' 
+    },
+    processBox: {
+        display :'grid'
+    },
+    dowloadProcessText: {
+        color: 'blue', 
+        cursor: 'pointer'
     }
 }
 
