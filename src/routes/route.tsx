@@ -4,9 +4,10 @@ import { useAppSelector } from '../redux/store';
 
 interface AuthCheckProps {
     children: React.ReactNode;
-  }
-  
-  const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
+}
+
+// user session control
+const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
     const LoginData =  useAppSelector((state) => state?.authUser.loginData);
 
     if(LoginData === undefined)

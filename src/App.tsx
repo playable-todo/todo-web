@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Routes, Route } from "react-router-dom";
 
+// Layouts
 import Layout from './Layout';
 
 // Import Routes all
