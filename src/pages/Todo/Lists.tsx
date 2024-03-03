@@ -44,18 +44,43 @@ import { SnackbarAlert } from '../../components/SnackbarAlert';
 import { TodoProps, TagsProps } from './todo.interface';
 import { snackbarOptionsProps } from '../../components/component';
 
+import { useSearchParams } from 'react-router-dom';
+
 const Lists = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const searchQuery = searchParams.get('search');
+    const tagQuery = searchParams.get('tag');
+
     // useStates
     const [open, setOpen] = useState(false);
     const [todo, setTodo] = useState<TodoProps[]>([]);
     const [tags, setTags] = useState<TagsProps[]>([]);
-    const [editData, setEditData] = useState<TodoProps | any>({})
+    const [editData, setEditData] = useState<TodoProps | any>({});
     const [snackbarData, setSnackbarData] = useState<snackbarOptionsProps>({});
+    const [filters, setFilters] = useState<string[]>([]);
 
     // useEffects
     useEffect(() => {
         getTodoFromApi();
     }, [])
+
+    useEffect(() => {
+        const updateParams = [];
+        if(searchQuery){
+            updateParams.push("search=" + searchQuery)
+        }
+        if(tagQuery){
+            updateParams.push("tag=" + tagQuery)
+        }
+
+        setFilters(updateParams)
+    }, [searchQuery, tagQuery])
+
+    useEffect(() => {
+        if(filters.length > 0){
+            getTodoFromApi();
+        }
+    }, [filters])
 
     // formik
     const addFormik = useFormik({
@@ -190,14 +215,22 @@ const Lists = () => {
 
     const getTodoFromApi = async() => {
         const url = '/todo/list';
+        const fullUrl = url + (filters.length > 0 ?  "?" + filters.join("&"): "") 
         const result: TodoProps[] | any = await Request({
             method: 'GET',
-            url: url
+            url: filters.length > 0 ? fullUrl : url
         });
 
         setTodo(result.todos);
         setTags(result.tags)
         return result
+    }
+
+    const handleSearchTag = (tag_id:string) => {
+        setSearchParams((prev) => {
+            prev.set("tag", tag_id);
+            return prev;
+        });
     }
 
     const handleClose = () => {
@@ -435,7 +468,7 @@ const Lists = () => {
                     aria-label="contacts"
                   >
                   {tags.length > 0 && tags.map((item, key) => (
-                    <ListItem disablePadding key={key}>
+                    <ListItem onClick={() => handleSearchTag(item?.tag_id!)} disablePadding key={key}>
                       <ListItemButton>
                         <ListItemIcon>
                            <Bookmarks /> 
