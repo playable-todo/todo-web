@@ -8,7 +8,8 @@ import {
     CardActions,
     Typography,
     Avatar,
-    useTheme
+    useTheme,
+    Chip
 } from '@mui/material';
 
 
@@ -48,6 +49,11 @@ const TodoSection: React.FC<TodoSectionProp> = ({ data, handleTodoOpen }) => {
                                 </Box>
                             )}
                         </CardContent>
+                        {item.tag_name && (
+                            <CardActions>
+                                <Chip label={item.tag_name} />
+                            </CardActions>
+                        )}
                     </Card>
                 </Grid>
             ))}

@@ -11,6 +11,7 @@ export type TodoProps = {
     image?: FileProps
     attachment?: FileProps,
     isMake?: boolean,
+    tag_name: string,
 }
 
 export type TagsProps = {
