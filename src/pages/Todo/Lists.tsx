@@ -125,10 +125,11 @@ const Lists = () => {
           oldImage: (editData?.image ? editData.image : ''),
           oldattachment: (editData.attachment ? editData.attachment : ''), 
           photo: '',
-          attachment: ''
+          attachment: '',
+          selectedTag: (editData.tag_id ? editData.tag_id : 0)
       },
       onSubmit: async (values) => {
-        const {title, todo, photo, attachment, oldImage, oldattachment} = values;
+        const {title, todo, photo, attachment, oldImage, oldattachment, selectedTag} = values;
 
         let deletedFiles = [];
         if(!oldImage && editData?.image){
@@ -154,6 +155,7 @@ const Lists = () => {
             const formdata: FormData = new FormData();
             formdata.append("title", title);
             formdata.append("todo", todo);
+            formdata.append("selected_tag", selectedTag);
             photo && formdata.append('file', photo);
             attachment && formdata.append('file', attachment);
             formdata.append('oldFiles', JSON.stringify(deletedFiles))
@@ -274,7 +276,6 @@ const Lists = () => {
                 handleFormik={addFormik}
             />
         </Box>
-
         <Box sx={{ marginTop: 2 }}>
             <FileUploadInput 
                 label="Görsel Ekle"
@@ -344,6 +345,16 @@ const Lists = () => {
                   handleChange={editFormik.handleChange}
                   size="small"
               />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+            <CustomSelectField 
+                  label="Tag"
+                  name="selectedTag"
+                  value={editFormik.values.selectedTag}
+                  selectItems={tags}
+                  hasError={Boolean(editFormik.touched.selectedTag)}
+                  handleFormik={editFormik}
+            />
           </Box>
           <Box sx={{ marginTop: 2 }}>
               <FileUploadInput 
