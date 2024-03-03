@@ -20,7 +20,8 @@ import {
     ListItemIcon,
     ListItemText,
     Typography,
-    useTheme
+    useTheme,
+    Link
   } from "@mui/material"
 
 // Material UI Icons
@@ -38,7 +39,7 @@ import { navbarStyles } from '../styles';
 import LogoImage from '../assets/logo.png'
 
 // React Router
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Redux
 import store,{ removeAllData } from '../redux/store';
@@ -96,7 +97,7 @@ const Navbar = () => {
 
     // logo section
     const LogoComponent = () => (
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <Link href="/" style={{ textDecoration: 'none' }}>
             <Box sx={{ display :'flex' }}>
             <img src={LogoImage} width={'40'} height={'48'} />
                 <Typography 
