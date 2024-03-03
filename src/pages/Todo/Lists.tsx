@@ -20,7 +20,7 @@ import {
   IconButton
 } from '@mui/material'
 
-import { Close } from '@mui/icons-material';
+import { Close, Delete } from '@mui/icons-material';
 
 import { Request } from '../../helpers/Request';
 
@@ -28,7 +28,8 @@ import TodoSection from '../../components/TodoSection';
 
 import { 
   CustomTextField,
-  FileUploadInput
+  FileUploadInput,
+  OldFileInput
 } from '../../components/FormElements';
 import { useFormik } from 'formik';
 import { SnackbarAlert } from '../../components/SnackbarAlert';
@@ -41,6 +42,7 @@ const Lists = () => {
     // useStates
     const [open, setOpen] = useState(false);
     const [todo, setTodo] = useState<TodoProps[]>([]);
+    const [editData, setEditData] = useState<TodoProps | any>({})
     const [snackbarData, setSnackbarData] = useState<snackbarOptionsProps>({});
 
     // useEffects
@@ -59,7 +61,7 @@ const Lists = () => {
       onSubmit: async (values) => {
         const {title, todo, photo, attachment} = values;
 
-        if (title == '') {
+       if (title == '') {
             setSnackbarData({
               type: 'error',
               message: 'Lütfen gerekli alanları doldurunuz.'
@@ -106,6 +108,75 @@ const Lists = () => {
       }
     });
 
+    const editFormik = useFormik({
+      enableReinitialize: true,
+      initialValues: {
+          title: (editData.title ? editData.title : ''),
+          todo: (editData.content ? editData.content : ''),
+          oldImage: (editData?.image ? editData.image : ''),
+          oldattachment: (editData.attachment ? editData.attachment : ''), 
+          photo: '',
+          attachment: ''
+      },
+      onSubmit: async (values) => {
+        const {title, todo, photo, attachment, oldImage, oldattachment} = values;
+
+        let deletedFiles = [];
+        if(!oldImage && editData?.image){
+            deletedFiles.push(editData.image)
+        }
+        if(!oldattachment && editData?.attachment){
+            deletedFiles.push(editData.attachment)
+        }
+        
+        if (title == '') {
+            setSnackbarData({
+              type: 'error',
+              message: 'Lütfen gerekli alanları doldurunuz.'
+          })
+        }
+        else if (todo == '') {
+            setSnackbarData({
+              type: 'error',
+              message: 'Lütfen gerekli alanları doldurunuz.'
+            })
+        }
+        else {
+            const formdata: FormData = new FormData();
+            formdata.append("title", title);
+            formdata.append("todo", todo);
+            photo && formdata.append('file', photo);
+            attachment && formdata.append('file', attachment);
+            formdata.append('oldFiles', JSON.stringify(deletedFiles))
+
+            const url = '/todo/list/' + editData.todo_id;
+            const response = await Request({
+                method: 'PUT',
+                url: url,
+                formData: formdata
+            });
+
+            const responseCheck = Object.keys(response).filter(item => item == 'success')
+            if(responseCheck){
+                setSnackbarData({
+                    type: 'success',
+                    message: 'Başarıyla güncellendi'
+                })
+                getTodoFromApi();
+                addFormik.resetForm();
+                handleClose()
+            }
+            else{
+                setSnackbarData({
+                  type: 'error',
+                  message: 'Bir hata oluştu'
+                })
+            } 
+
+        }
+      }
+    });
+
     const getTodoFromApi = async() => {
         const url = '/todo/list';
         const result: TodoProps[] | any = await Request({
@@ -119,8 +190,41 @@ const Lists = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setEditData({});
     };
-    
+
+    const handleTodoOpen = (todo: TodoProps) => {
+      setOpen(true)
+      setEditData(todo)
+    }
+
+    const handleDeleteTodo = async() => {
+        const url = '/todo/list/' + editData?.todo_id;
+
+        const result = await Request({
+            method: 'DELETE',
+            url: url
+        });
+
+        const responseCheck = Object.keys(result).filter(item => item == 'success')
+
+        if(responseCheck){
+            setSnackbarData({
+                type: 'success',
+                message: 'Todo silindi'
+            })
+            getTodoFromApi();
+            handleClose()
+        }
+        else{
+            setSnackbarData({
+              type: 'error',
+              message: 'Bir hata oluştu'
+            })
+        } 
+
+    }
+
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
@@ -156,7 +260,6 @@ const Lists = () => {
                 label="Görsel Ekle"
                 name='photo'
                 type="image"
-                handleOnChange={addFormik.handleChange}
                 setAlert={setSnackbarData}
                 handleFormik={addFormik}
             />
@@ -166,7 +269,6 @@ const Lists = () => {
                 label="Ek dosya"
                 name='attachment'
                 type="attachment"
-                handleOnChange={addFormik.handleChange}
                 setAlert={setSnackbarData}
                 handleFormik={addFormik}
             />
@@ -191,6 +293,93 @@ const Lists = () => {
                 </Grid>
             </Grid>
         </Box>
+      </form>
+    )
+
+    const editForm  = (
+      <form
+        method='PUT'
+        onSubmit={editFormik.handleSubmit}
+      >
+          <Box sx={{ marginTop: 2 }}>
+            <CustomTextField 
+                label='Başlık'
+                type='text'
+                name='title'
+                value={editFormik.values.title}
+                placeholder='Başlık'
+                handleChange={editFormik.handleChange}
+                size="small"
+            />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+              <CustomTextField 
+                  label='Todo'
+                  type='text'
+                  name='todo'
+                  value={editFormik.values.todo}
+                  placeholder='Bi to-do ekleyin'
+                  handleChange={editFormik.handleChange}
+                  size="small"
+              />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+              <FileUploadInput 
+                  label="Görsel Ekle"
+                  name='photo'
+                  oldFileName='oldImage'
+                  type="image"
+                  setAlert={setSnackbarData}
+                  handleFormik={editFormik}
+              />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+              <OldFileInput 
+                  name="oldImage"
+                  value={editFormik.values.oldImage ? [editFormik.values.oldImage]: []}
+                  type="image"
+                  handleFormik={editFormik}
+              />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+              <FileUploadInput 
+                  label="Ek dosya"
+                  name='attachment'
+                  oldFileName='oldattachment'
+                  type="attachment"
+                  setAlert={setSnackbarData}
+                  handleFormik={editFormik}
+              />
+          </Box>
+          <Box sx={{ marginTop: 2 }}>
+              <OldFileInput 
+                  name="oldattachment"
+                  value={editFormik.values.oldattachment ? [editFormik.values.oldattachment]: []}
+                  type="oldattachment"
+                  handleFormik={editFormik}
+              />
+          </Box>
+          <Box sx={{ marginTop: 4 }}>
+            <Grid container>
+                <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
+                    <Button 
+                      color="error"
+                      variant='contained'
+                      onClick={() => handleDeleteTodo()}
+                    ><Delete /> Todo sil</Button>
+                </Grid>
+                <Grid item xl={6} lg={6} md={6} xs={6} sm={6}>
+                    <Box sx={{ float: 'right' }}>  
+                        <Button 
+                            type='submit'
+                            color="success"
+                            variant='contained'
+                        >Kaydet</Button>
+                    </Box>
+                </Grid>
+            </Grid>
+          </Box>
+          
       </form>
     )
 
@@ -230,7 +419,10 @@ const Lists = () => {
                   </Card>
                   <Box sx={{ marginTop: 4 }}>
                       {todo.length > 0  && (
-                          <TodoSection data={todo} />
+                          <TodoSection 
+                            data={todo} 
+                            handleTodoOpen={handleTodoOpen} 
+                          />
                       )}
                   </Box>
             </Grid> 
@@ -247,18 +439,20 @@ const Lists = () => {
                 <Box sx={{ display :'block' }}>
 
                     <Typography sx={{ display :'contents', fontSize: '16px', fontWeight: 600 }}>
-                          Bir Todo Ekleyin
+                         {Object.keys(editData).length > 0 ? 'Todo görüntüleme' : 'Bir Todo Ekleyin'}
                     </Typography>
                     <IconButton onClick={() => handleClose()} sx={{ float: 'right', padding: 0 }}>
                         <Close fontSize='large' />
                     </IconButton>
                 </Box>
             </DialogTitle>
-            <DialogContent sx={{ 
-                    width: fullScreen ? '100%' : '500px',
-                    display:'block'
-            }}>
-                   {addForm}
+            <DialogContent 
+              sx={{ 
+                  width: fullScreen ? '100%' : '500px',
+                  display:'block'
+              }}
+            >
+                {Object.keys(editData).length > 0 ? editForm : addForm}
             </DialogContent>
         </Dialog>
       </Container>
