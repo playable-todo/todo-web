@@ -12,6 +12,7 @@ import {
 
 // Material UI İcons
 import { LockOutlined } from '@mui/icons-material';
+import { loginPageStyles } from '../../styles';
 
 // Helpers
 import { HandleLoginToken, Request, RequestPublic } from "../../helpers/Request";
@@ -50,6 +51,7 @@ export default function Login() {
   },[passLogin])
 
   // Formiks
+
   // Login formik
   const formik = useFormik({
     initialValues: {
@@ -96,14 +98,12 @@ export default function Login() {
       const {fullname, email, pass} = values;
 
       if (fullname == '') {
-       
           setSnackbarData({
             type: 'error',
             message: 'Lütfen gerekli alanları doldurunuz.'
           })
       }
       else if (email == '') {
-       
           setSnackbarData({
             type: 'error',
             message: 'Lütfen gerekli alanları doldurunuz.'
@@ -139,7 +139,8 @@ export default function Login() {
                       
             if(!data.error){
                 setPassLogin(true);
-            }else{
+            }
+            else{
               setSnackbarData({
                 type: 'sucess',
                 message: 'Kaydınız başarıyla tamamlandı'
@@ -162,6 +163,7 @@ export default function Login() {
       navigate('/');
   }
 
+  // Forms
   const LoginForm = (
         <form
             method='POST'
@@ -247,15 +249,8 @@ export default function Login() {
       {Object.keys(snackbarData).length > 0 && <SnackbarAlert snackbarOptions={snackbarData} />}
 
       {/* Box section */}
-        <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-        >
-            <Avatar sx={{ m: 1,  }}>
+        <Box sx={loginPageStyles.bottomBox}>
+            <Avatar sx={loginPageStyles.avatar}>
                 <LockOutlined />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -263,11 +258,11 @@ export default function Login() {
             </Typography>
 
             {/* Forms */}
-            <Box sx={{ mt: '50px' }}>
+            <Box sx={loginPageStyles.formBox}>
                 {passRegister ? RegisterForm : LoginForm}
                 <Grid container>
                     <Grid item>
-                      <Typography sx={{ color: 'blue', cursor: 'pointer' }} onClick={() => setPassRegister(!passRegister)}>
+                      <Typography sx={loginPageStyles.bottomText} onClick={() => setPassRegister(!passRegister)}>
                           {passRegister ? "Hesabın var mı ? o zaman giriş yap"  : "Hesabın yok mu? hemen üye ol"}
                       </Typography>
                     </Grid>

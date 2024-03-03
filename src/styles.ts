@@ -228,3 +228,23 @@ export const todoSectionStyles: Record<string, SxProps<Theme> | undefined> = {
         border: '2px solid #7c4b00'
     }
 }
+
+// pages/Authentication/Login.tsx
+export const loginPageStyles: Record<string, SxProps<Theme> | undefined> = { 
+    bottomBox: {
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    avatar: {
+        m: 1
+    },
+    formBox: {
+        mt: '50px'
+    },
+    bottomText: {
+        color: 'blue', 
+        cursor: 'pointer'
+    }
+}
