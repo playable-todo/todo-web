@@ -9,10 +9,11 @@ import {
     Box,
     Fab,
     Grid,
-    Button
+    Button,
+    MenuItem
 } from '@mui/material';
 
-import { Visibility, VisibilityOff, Add, Close, FileDownload } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Add, Close } from '@mui/icons-material';
 
 import { 
     customPasswordFieldProps, 
@@ -20,7 +21,7 @@ import {
     FileUploadInputProps,
     FileViewSectionProps,
     OldFileInputProps,
-    FileProps
+    SelectFieldProps
 } from './component';
 
 export const CustomTextField: React.FC<customTextFieldProps>  = ({
@@ -305,6 +306,32 @@ export const OldFileInput: React.FC<OldFileInputProps> = ({name, value, type, ha
                 isOld={true}
             />
         )}
+        </>
+    )
+}
+
+export const CustomSelectField: React.FC<SelectFieldProps> = ({label, name, value, selectItems , hasError, handleFormik, ...rest }) => {
+
+    return (
+        <>
+            <InputLabel>{label}</InputLabel>
+            <TextField
+                select
+                fullWidth
+                size='small'
+                name={name}
+                value={value}
+                error={hasError ? Boolean(value == '' && hasError) : false}
+                onChange={handleFormik.handleChange}
+                {...rest}
+            >
+                <MenuItem value="0">Seç</MenuItem>
+                {selectItems.length > 0 && selectItems.map((selectItem, key) => (
+                    <MenuItem value={selectItem.tag_id} key={key}>
+                        {selectItem.title}
+                    </MenuItem>
+                ))}
+            </TextField>
         </>
     )
 }

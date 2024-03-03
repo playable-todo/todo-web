@@ -1,4 +1,4 @@
-import { TodoProps } from "../pages/Todo/todo.interface"
+import { TodoProps, TagsProps } from "../pages/Todo/todo.interface"
 
 export type searchProps = {
     device: string
@@ -54,6 +54,18 @@ export type OldFileInputProps = {
     type: string,
     handleFormik: any,
 }
+
+export type SelectFieldProps = {
+    label: string, 
+    name: string, 
+    value: string, 
+    selectItems: TagsProps[], 
+    hasError: boolean, 
+    handleFormik: any, 
+}
+
+
+// Other components
 
 export type snackbarOptionsProps = {
     message?: string,
