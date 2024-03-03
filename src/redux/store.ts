@@ -2,33 +2,33 @@ import { configureStore, createSlice, Middleware } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux'
 import { AuthUserState} from './interface';
 
-  
-// loginSlice oluşturulması ve reducer tanımlanması
+// Slices
+
+// loginSlice
 const loginSlice = createSlice({
-  name: 'authUser',
-  initialState: {} as AuthUserState,
-  reducers: {
-    setLoginData: (state, action) => {
-      state.loginData = { ...state.loginData, ...action.payload}
+    name: 'authUser',
+    initialState: {} as AuthUserState,
+    reducers: {
+      setLoginData: (state, action) => {
+        state.loginData = { ...state.loginData, ...action.payload}
+      },
     },
-  },
 });
 
-export const { setLoginData } = loginSlice.actions;
-
-// rootReducer oluşturulması ve tüm reducer'ların birleştirilmesi
+// rootReducer
 const rootReducer = {
     authUser: loginSlice.reducer
 };
 
-// Özel bir middleware oluşturun
+// Middleware
 const saveToLocalStorageMiddleware: Middleware = (store) => (next) => (action) => {
-  const result = next(action);
+    const result = next(action);
 
-  localStorage.setItem('authUser', JSON.stringify(store.getState().authUser));
-  return result;
+    localStorage.setItem('authUser', JSON.stringify(store.getState().authUser));
+    return result;
 };
 
+// Store
 const store = configureStore({
   reducer: rootReducer,
   preloadedState: {
@@ -39,11 +39,13 @@ const store = configureStore({
     getDefaultMiddleware().concat(saveToLocalStorageMiddleware),
 });
 
+
+export const { setLoginData } = loginSlice.actions;
+export default store;
+
 export function removeAllData(){
     localStorage.clear();
 }
-
-export default store;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
