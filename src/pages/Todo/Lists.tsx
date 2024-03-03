@@ -89,7 +89,7 @@ const Lists = () => {
           todo: '',
           photo: '',
           attachment: '',
-          selectedTag: ''
+          selectedTag: '0'
       },
       onSubmit: async (values) => {
         const {title, todo, photo, attachment, selectedTag} = values;
@@ -215,7 +215,7 @@ const Lists = () => {
 
     const getTodoFromApi = async() => {
         const url = '/todo/list';
-        const fullUrl = url + (filters.length > 0 ?  "?" + filters.join("&"): "") 
+        const fullUrl = url + (filters.length > 0 ?  "?" + filters.join("&"): "")
         const result: TodoProps[] | any = await Request({
             method: 'GET',
             url: filters.length > 0 ? fullUrl : url
@@ -305,7 +305,7 @@ const Lists = () => {
                 name="selectedTag"
                 value={addFormik.values.selectedTag}
                 selectItems={tags}
-                hasError={Boolean(addFormik.touched.selectedTag)}
+                hasError={false}
                 handleFormik={addFormik}
             />
         </Box>
@@ -385,7 +385,7 @@ const Lists = () => {
                   name="selectedTag"
                   value={editFormik.values.selectedTag}
                   selectItems={tags}
-                  hasError={Boolean(editFormik.touched.selectedTag)}
+                  hasError={false}
                   handleFormik={editFormik}
             />
           </Box>
