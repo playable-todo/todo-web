@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
     Typography,
     TextField, 
@@ -8,15 +8,19 @@ import {
     InputLabel,
     Box,
     Fab,
-    Grid
+    Grid,
+    Button
 } from '@mui/material';
 
-import { Visibility, VisibilityOff, Add, Close } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Add, Close, FileDownload } from '@mui/icons-material';
 
 import { 
     customPasswordFieldProps, 
     customTextFieldProps,
-    FileUploadInputProps
+    FileUploadInputProps,
+    FileViewSectionProps,
+    OldFileInputProps,
+    FileProps
 } from './component';
 
 export const CustomTextField: React.FC<customTextFieldProps>  = ({
@@ -103,17 +107,117 @@ export const CustomPasswordField: React.FC<customPasswordFieldProps>  = ({
     )
 }
 
-export const FileUploadInput: React.FC<FileUploadInputProps> = ({label, name, type, handleOnChange, setAlert, handleFormik, ...rest}) => {
+export const FileViewSection: React.FC<FileViewSectionProps> = ({file, type, removeFunc, isOld}) => {
+    const EndPoint = import.meta.env.VITE_ENDPOINT;
+
+    const onButtonClick = (url: string) => {
+        const pdfUrl = "Sample.pdf";
+        const link = document.createElement("a");
+        link.href = pdfUrl;
+        link.download = url; // specify the filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    return (
+        <>
+        {file.length > 0 && file.map((item, key) => (
+            <>
+            <Box 
+                sx={{
+                    position: 'relative', 
+                    margin: '20px 20px 10px 0px' ,
+                    display: 'inline-block', 
+                    border: '2px solid #7c4b00'
+                }} 
+                key={key}
+            >
+                {isOld ? (
+                    (type == 'image' ? (
+                        <img 
+                            src={EndPoint + item?.url}
+                            style={{ objectFit: 'cover' }} 
+                            width={100} 
+                            height={100} 
+                            alt="Files" 
+                        />
+                    ): (
+                        <Typography sx={{ p: 2, marginRight: 6 }}>{item.name}</Typography>
+                    ))
+                ): (
+                    (type == 'image' ? (
+                        <img 
+                            src={URL.createObjectURL(item)}
+                            style={{ objectFit: 'cover' }} 
+                            width={100} 
+                            height={100} 
+                            alt="Files"
+                        />
+                    ): (
+                        <Typography sx={{ p: 2, marginRight:4 }}>{item.name}</Typography>
+                    ))
+                )}             
+                    <Box sx={{
+                        position: 'absolute', 
+                        top: 0, 
+                        right: 0, 
+                        padding: '5px', 
+                        display: 'flex', 
+                        flexDirection: 'column'
+                    }}>
+                        <IconButton 
+                            aria-label="remove to todo" 
+                            onClick={() => removeFunc(key)}
+                            sx={{
+                                border: '2px solid red',
+                                borderRadius: 3, 
+                                '&:hover': {
+                                    backgroundColor :'#FFFFFF'
+                                },
+                            }}
+                        >
+                            <Close sx={{
+                                fontSize: '16px',
+                                color: 'red' 
+                            }} />
+                        </IconButton>
+                    </Box>
+            </Box>
+                {isOld && type !== 'image' && (
+                    <Box sx={{ display :'grid' }}>
+                        <Typography
+                            href={EndPoint + item.url}
+                            component="a"
+                            target='_blank'
+                        >
+                            Görüntüle
+                        </Typography>
+                        
+                        <Typography
+                            onClick={() => onButtonClick(EndPoint + item.url)}
+                            sx={{ color: 'blue', cursor: 'pointer' }}
+                        >
+                            İndir
+                        </Typography>
+                    </Box>
+                )}
+            </>
+        ))}
+        </>
+    )
+}
+
+export const FileUploadInput: React.FC<FileUploadInputProps> = ({label, name, oldFileName, type, setAlert, handleFormik, ...rest}) => {
     const [file, setFile] = useState<File[]>([]);
+    const fileInputRef = useRef<HTMLDivElement | any>(null);
 
     const handleUploadFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
         const getfileList = event.target.files;
-        
-        console.log(getfileList)
-        
+
         if(getfileList){
             const files: File[] = Array.from(getfileList);
-
+            
             if(type == 'image'){
                 if(new RegExp("image/*").test(files[0].type)){
                     handleFormik.setFieldValue(name, files[0]);
@@ -123,11 +227,13 @@ export const FileUploadInput: React.FC<FileUploadInputProps> = ({label, name, ty
                         type: 'error',
                         message: 'Seçtiğiniz dosya image olmalı'
                     })
+                    fileInputRef.current.value! = null
                 }
             }else{
                 handleFormik.setFieldValue(name, files[0]);
                 setFile(files)
             }
+            handleFormik.setFieldValue(oldFileName, undefined)
             
         }
     }
@@ -135,71 +241,19 @@ export const FileUploadInput: React.FC<FileUploadInputProps> = ({label, name, ty
     const removeSelectFile = (imageKey: number) => {
         const newList = file.filter((veri, key) => key !== imageKey && veri);
         setFile(newList);
-        handleFormik.setFieldValue(name, undefined)
+        handleFormik.setFieldValue(name, undefined);
+        fileInputRef.current.value! = null
     }
-
-    const renderFileView = (
-        <>
-            {file.length > 0 && file.map((item, key) => (
-                <Box 
-                    sx={{
-                        position: 'relative', 
-                        margin: '20px 20px 20px 0px' ,
-                        display: 'inline-block', 
-                        border: '2px solid #7c4b00'
-                    }} 
-                    key={key}
-                >
-                    {type == 'image' ? (
-                        <img 
-                            src={URL.createObjectURL(item)}
-                            style={{ objectFit: 'cover' }} 
-                            width={100} 
-                            height={100} 
-                            alt="Files" 
-                        />
-                    ): (
-                        <Typography sx={{ p: 2, marginRight: 4 }}>{item.name}</Typography>
-                    )}                        
-                        <Box sx={{
-                            position: 'absolute', 
-                            top: 0, 
-                            right: 0, 
-                            padding: '5px', 
-                            display: 'flex', 
-                            flexDirection: 'column', 
-                            alignItems: 'flex-end'
-                        }}>
-                            <IconButton 
-                                aria-label="remove to advert" 
-                                onClick={() => removeSelectFile(key)}
-                                sx={{
-                                    border: '2px solid red',
-                                    borderRadius: 3, 
-                                    '&:hover': {
-                                        backgroundColor :'#FFFFFF'
-                                    }
-                                }}
-                            >
-                                <Close sx={{
-                                    fontSize: '16px',
-                                    color: 'red' 
-                                }} />
-                            </IconButton>
-                        </Box>
-                </Box>
-            ))}
-        </>
-    )
 
     const renderFileInput = (
         <label htmlFor={name}>
             <input
+                ref={fileInputRef}
                 type="file"
                 name={name}
                 id={name}
                 onChange={(event) => { 
-                    handleOnChange;
+                    handleFormik.handleChange(event);
                     handleUploadFiles(event)
                 }}
                 style={{ display: 'none' }}
@@ -213,7 +267,7 @@ export const FileUploadInput: React.FC<FileUploadInputProps> = ({label, name, ty
                     variant="extended"
                 >
                     <Add /> Yükle
-                </Fab>
+                </Fab> 
         </label>
     )
 
@@ -224,8 +278,33 @@ export const FileUploadInput: React.FC<FileUploadInputProps> = ({label, name, ty
                 {renderFileInput}
             </Grid>
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                {renderFileView}
+                <FileViewSection 
+                    file={file}
+                    type={type}
+                    removeFunc={removeSelectFile}
+                    isOld={false}
+                />
             </Grid>
         </Grid>
+    )
+}
+
+export const OldFileInput: React.FC<OldFileInputProps> = ({name, value, type, handleFormik}) => {
+    const removeSelectFile = (imageKey: number) => {
+        const newList = value?.filter((veri, key) => key !== imageKey && veri);
+        handleFormik.setFieldValue(name, newList.length == 0 && undefined);
+    }
+
+    return (
+        <>
+        {value.length > 0 && (
+            <FileViewSection 
+                file={value}
+                type={type}
+                removeFunc={removeSelectFile}
+                isOld={true}
+            />
+        )}
+        </>
     )
 }
