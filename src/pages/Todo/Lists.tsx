@@ -283,6 +283,7 @@ const Lists = () => {
                 type='text'
                 name='title'
                 value={addFormik.values.title}
+                hasError={Boolean(addFormik.touched.title)}
                 placeholder='Başlık'
                 handleChange={addFormik.handleChange}
                 size="small"
@@ -294,6 +295,7 @@ const Lists = () => {
                 type='text'
                 name='todo'
                 value={addFormik.values.todo}
+                hasError={Boolean(addFormik.touched.todo)}
                 placeholder='Bi to-do ekleyin'
                 handleChange={addFormik.handleChange}
                 size="small"
@@ -363,6 +365,7 @@ const Lists = () => {
                 type='text'
                 name='title'
                 value={editFormik.values.title}
+                hasError={Boolean(editFormik.touched.title)}
                 placeholder='Başlık'
                 handleChange={editFormik.handleChange}
                 size="small"
@@ -374,6 +377,7 @@ const Lists = () => {
                   type='text'
                   name='todo'
                   value={editFormik.values.todo}
+                  hasError={Boolean(editFormik.touched.todo)}
                   placeholder='Bi to-do ekleyin'
                   handleChange={editFormik.handleChange}
                   size="small"
